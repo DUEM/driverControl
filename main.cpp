@@ -126,10 +126,10 @@ void displayDigit(uint8_t digit, uint8_t position)
     //timer.reset();
 }
 
-void displayAccelerating(digitalRead(mbed[25])) // function to indicate accelerating
+void displayAccelerating(accel(p25)) // function to indicate accelerating
 { 
-
-    if (digitalRead(mbed[25]) = 1) { //mbed[25] is the pin number on LPC1768-mbed for ACCEL_OUT. As accelerator is a switch, only on or off so signal is 1 or 0. Not sure if this is the right way to find out what position the accelerator switch is in
+    DigitalIn accel(p25);
+    if (accel(p25) = 1) { //pin number 25 on LPC1768-mbed for ACCEL_OUT. As accelerator is a switch, only on or off so signal is 1 or 0. Not sure if this is the right way to find out what position the accelerator switch is in
         //l1 = 1 //top dot led on 7 seg. According to an almost identical seven seg unit, these led spots are labeled l1 and l2
         //l2 = 1 // bottom dot led on 7 seg
         pinMode(l1, OUTPUT);  //online 7 seg example code used pinMode and digitalWrite. Not sure if these are built in function in the three imported libraries^^^. If not then try code that has been commented out above two lines
@@ -137,10 +137,10 @@ void displayAccelerating(digitalRead(mbed[25])) // function to indicate accelera
         pinMode(l2, OUTPUT);
         digitalWrite(l2, HIGH);
     }
-    else if (digitalRead(mbed[25]) = 0) { //when mbed[25] = 0 i.e. switch not depressed  
+    else if (accel(p25) = 0) { //when mbed[25] = 0 i.e. switch not depressed  
         //l1 = 0 // top led on 7 seg off
         //l2 = 0 // bottom led on 7 seg off
-        pinMode(l1, OUTPUT);
+        pinMode(l1, OUTPUT); //l1 and l2 is the title of the led dots on the 7 seg. Not sure if LPC1768 knows what l1 and l2 is as its not on its own board.
         digitalWrite(l1, LOW);
         pinMode(l2, OUTPUT);
         digitalWrite(l2, LOW);
@@ -154,7 +154,7 @@ void displayNumber(uint8_t number, bool position)
     //timer.start();
     for (int n = 0; n < 100; (n = n + 10))
 
-    displayAccelerating(mbed[25]) 
+     
     {
         if (number >= n && number < n + 10)
         {
@@ -284,6 +284,10 @@ int main()
         {
             curr_val = 0;
             speed_val = 0;
+        }
+        if (accel)
+        {
+            displayAccelerating(accel(p25));
         }
         else
         {
