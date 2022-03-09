@@ -128,8 +128,9 @@ void displayDigit(uint8_t digit, uint8_t position)
 
 void displayAccelerating(accel(p25)) // function to indicate accelerating
 { 
-    DigitalIn accel(p25);
-    if (accel(p25) == 1) { //pin number 25 on LPC1768-mbed for ACCEL_OUT. As accelerator is a switch, only on or off so signal is 1 or 0. Not sure if this is the right way to find out what position the accelerator switch is in
+    digitalRead.accel;
+
+    if (accel == 1) { //pin number 25 on LPC1768-mbed for ACCEL_OUT. As accelerator is a switch, only on or off so signal is 1 or 0. Not sure if this is the right way to find out what position the accelerator switch is in
         //l1 = 1 //top dot led on 7 seg. According to an almost identical seven seg unit, these led spots are labeled l1 and l2
         //l2 = 1 // bottom dot led on 7 seg
         pinMode(l1, OUTPUT);  //online 7 seg example code used pinMode and digitalWrite. Not sure if these are built in function in the three imported libraries^^^. If not then try code that has been commented out above two lines
@@ -137,7 +138,7 @@ void displayAccelerating(accel(p25)) // function to indicate accelerating
         pinMode(l2, OUTPUT);
         digitalWrite(l2, HIGH);
     }
-    else if (accel(p25) == 0) { //when mbed[25] = 0 i.e. switch not depressed  
+    else if (accel == 0) { //when mbed[25] = 0 i.e. switch not depressed  
         //l1 = 0 // top led on 7 seg off
         //l2 = 0 // bottom led on 7 seg off
         pinMode(l1, OUTPUT); //l1 and l2 is the title of the led dots on the 7 seg. Not sure if LPC1768 knows what l1 and l2 is as its not on its own board.
