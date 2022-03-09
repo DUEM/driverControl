@@ -18,10 +18,14 @@ DigitalIn regen(p22);
 DigitalIn rev(p23);
 DigitalIn brake(p24);
 DigitalIn accel(p25);
+PwmOut TritiumTempPwm(p26);//new
 float maxBusCurrent = 1.0;
 float actualSpeedms = 0;
 float actualSpeedrpm = 0;
 float actualSpeedkmh = 0;
+float HeatSinkTemp = 0;//new
+float MotorTemp = 0;//new
+
 
 I2C i2c(p28,p27);
 Adafruit_LEDBackpack display(&i2c);
@@ -37,7 +41,8 @@ CAN can1(p30, p29);
 const uint16_t SIGNAL_ID = 0x501;
 const uint16_t BUS_ID = 0x502;
 const uint16_t TRITIUM_ID = 0x603;
-const uint8_t DISPLAY_ADDR = 0x70; 
+const uint8_t DISPLAY_ADDR = 0x70;
+const uint16_t TRITIUM_22_ID = 0x40B;//new
 char counter = 0;
 uint8_t dig1 = 0;
 uint8_t dig2 = 0;
@@ -87,9 +92,33 @@ void onCanReceived()
         msgReceived >> actualSpeedms; 
     }
     //timer.start(); // to transmit next message in main
+//}
+
+//======================================================================//new
+
+  can1.read(msgReceived);
+
+  if(msgReceived.id == TRITIUM_22_ID){
+
+    msgReceived >> MotorTemp;
+    //unpck bits 0-31 into MotorTemp
+    msgReceived >> HeatSinkTemp;
+    //unpack bits 32-63 into HeatSinkTemp
+  }
+
+  if(HeatSinkTemp < 0x2D){
+    TritiumTempPwm = 0.0;
+  }
+  else if(HeatSinkTemp > 0x41){
+    TritiumTempPwm = 1.0;
+  }
+  else{
+    TritiumTempPwm = (0.05 * HeatSinkTemp) - 2.25;
+    //possibly need abs(HeatSinkTemp) to multiply in base 10
+  }
 }
 
-//======================================================================
+//======================================================================//new
 
 void displayDigit(uint8_t digit, uint8_t position)
 {
